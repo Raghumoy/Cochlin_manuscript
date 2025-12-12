@@ -1,0 +1,530 @@
+# data nanlysis for human choroid plexus - raw data available at NCBI GEO ID-GSE159812 (32). The ChP specific datasets for the controls (n=6 : GSM4848456, GSM4848457, GSM4848458, GSM4848459, GSM4848460 and GSM4848461) and the COVID-19 infected donors (n=7, GSM4848451, GSM4848452, GSM4848453, GSM4848454, GSM5171535, GSM5171536 and GSM5171537)
+setwd("E:/one drive backup/human choroid covid19/")
+getwd()
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(sctransform)
+
+library(Matrix)
+#control 1
+#if there is disparrity between dims
+# Read the barcodes, genes, and matrix files
+barcodes <- readLines("controls/GSM4848456/barcodes.tsv.gz")
+genes <- readLines("controls/GSM4848456/features.tsv.gz")  
+matrix <- readMM("controls/GSM4848456/matrix.mtx.gz")
+Endothelial_markers<-c("SERPINE1","MECOM","HSP90AA1","HSPH1","ARL15","LDB2","FLT1","VWF","HSPD1","ANO2","HSPA5","PELI1","PIK3R3","ATP8B1","SERPINH1")
+
+
+# Check dimensions
+length(barcodes)
+length(genes)
+dim(matrix)
+install.packages("R.utils")
+library(R.utils)
+
+
+#control1_GSM4848456
+Control1.data <- Read10X(data.dir = "controls/GSM4848456/")
+Control1 <- CreateSeuratObject(counts = Control1.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Control1[["percent.mt"]] <- PercentageFeatureSet(Control1, pattern = "^MT-")
+VlnPlot(Control1, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Control1 <- subset(Control1, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Control1$group <- "Control"
+Control1$sampleId<-"Control1"
+# Verify the addition
+head(Control1@meta.data)
+#all.genes <- rownames(Control1)
+Control1<- SCTransform(Control1, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Control1 <- head(VariableFeatures(Control1), 10)
+plot1 <- VariableFeaturePlot(Control1)
+plot2 <- LabelPoints(plot = plot1, points = top10.Control1, repel = TRUE)
+plot2
+Control1 <- RunPCA(Control1, features = VariableFeatures(object = Control1))
+ElbowPlot(Control1)
+#resolution trial
+Control1_0.6 <- FindNeighbors(Control1, dims = 1:10)
+Control1_0.6 <- FindClusters(Control1_0.6, resolution = 0.6)
+Control1_0.6 <- RunUMAP(Control1_0.6, dims = 1:10)
+DimPlot(Control1_0.6, reduction = "umap")
+DoHeatmap(Control1_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Control1_0.6, features = c("COCH"))
+
+
+#control2_GSM4848457
+Control2.data <- Read10X(data.dir = "controls/GSM4848457/")
+Control2 <- CreateSeuratObject(counts = Control2.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Control2[["percent.mt"]] <- PercentageFeatureSet(Control2, pattern = "^MT-")
+VlnPlot(Control2, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Control2 <- subset(Control2, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Control2$group <- "Control"
+Control2$sampleId<-"Control2"
+# Verify the addition
+head(Control2@meta.data)
+#all.genes <- rownames(Control2)
+Control2<- SCTransform(Control2, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Control2 <- head(VariableFeatures(Control2), 10)
+plot1 <- VariableFeaturePlot(Control2)
+plot2 <- LabelPoints(plot = plot1, points = top10.Control2, repel = TRUE)
+plot2
+Control2 <- RunPCA(Control2, features = VariableFeatures(object = Control2))
+ElbowPlot(Control2)
+#resolution trial
+Control2_0.6 <- FindNeighbors(Control2, dims = 1:10)
+Control2_0.6 <- FindClusters(Control2_0.6, resolution = 0.6)
+Control2_0.6 <- RunUMAP(Control2_0.6, dims = 1:10)
+DimPlot(Control2_0.6, reduction = "umap")
+DoHeatmap(Control2_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Control2_0.6, features = c("COCH"))
+
+#control3_GSM4848458
+Control3.data <- Read10X(data.dir = "controls/GSM4848458/")
+Control3 <- CreateSeuratObject(counts = Control3.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Control3[["percent.mt"]] <- PercentageFeatureSet(Control3, pattern = "^MT-")
+VlnPlot(Control3, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Control3 <- subset(Control3, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Control3$group <- "Control"
+Control3$sampleId<-"Control3"
+# Verify the addition
+head(Control3@meta.data)
+#all.genes <- rownames(Control3)
+Control3<- SCTransform(Control3, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Control3 <- head(VariableFeatures(Control3), 10)
+plot1 <- VariableFeaturePlot(Control3)
+plot2 <- LabelPoints(plot = plot1, points = top10.Control3, repel = TRUE)
+plot2
+Control3 <- RunPCA(Control3, features = VariableFeatures(object = Control3))
+ElbowPlot(Control3)
+#resolution trial
+Control3_0.6 <- FindNeighbors(Control3, dims = 1:10)
+Control3_0.6 <- FindClusters(Control3_0.6, resolution = 0.6)
+Control3_0.6 <- RunUMAP(Control3_0.6, dims = 1:10)
+DimPlot(Control3_0.6, reduction = "umap")
+DoHeatmap(Control3_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Control3_0.6, features = c("COCH"))
+
+#control4_GSM4848459
+Control4.data <- Read10X(data.dir = "controls/GSM4848459/")
+Control4 <- CreateSeuratObject(counts = Control4.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Control4[["percent.mt"]] <- PercentageFeatureSet(Control4, pattern = "^MT-")
+VlnPlot(Control4, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Control4 <- subset(Control4, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Control4$group <- "Control"
+Control4$sampleId<-"Control4"
+# Verify the addition
+head(Control4@meta.data)
+#all.genes <- rownames(Control4)
+Control4<- SCTransform(Control4, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Control4 <- head(VariableFeatures(Control4), 10)
+plot1 <- VariableFeaturePlot(Control4)
+plot2 <- LabelPoints(plot = plot1, points = top10.Control4, repel = TRUE)
+plot2
+Control4 <- RunPCA(Control4, features = VariableFeatures(object = Control4))
+ElbowPlot(Control4)
+#resolution trial
+Control4_0.6 <- FindNeighbors(Control4, dims = 1:10)
+Control4_0.6 <- FindClusters(Control4_0.6, resolution = 0.6)
+Control4_0.6 <- RunUMAP(Control4_0.6, dims = 1:10)
+DimPlot(Control4_0.6, reduction = "umap")
+DoHeatmap(Control4_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Control4_0.6, features = c("COCH"))
+
+
+
+
+#control5_GSM4848460
+Control5.data <- Read10X(data.dir = "controls/GSM4848460/")
+Control5 <- CreateSeuratObject(counts = Control5.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Control5[["percent.mt"]] <- PercentageFeatureSet(Control5, pattern = "^MT-")
+VlnPlot(Control5, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Control5 <- subset(Control5, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Control5$group <- "Control"
+Control5$sampleId<-"Control5"
+# Verify the addition
+head(Control5@meta.data)
+#all.genes <- rownames(Control5)
+Control5<- SCTransform(Control5, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Control5 <- head(VariableFeatures(Control5), 10)
+plot1 <- VariableFeaturePlot(Control5)
+plot2 <- LabelPoints(plot = plot1, points = top10.Control5, repel = TRUE)
+plot2
+Control5 <- RunPCA(Control5, features = VariableFeatures(object = Control5))
+ElbowPlot(Control5)
+#resolution trial
+Control5_0.6 <- FindNeighbors(Control5, dims = 1:10)
+Control5_0.6 <- FindClusters(Control5_0.6, resolution = 0.6)
+Control5_0.6 <- RunUMAP(Control5_0.6, dims = 1:10)
+DimPlot(Control5_0.6, reduction = "umap")
+DoHeatmap(Control5_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Control5_0.6, features = c("COCH"))
+
+#control6_GSM4848461
+Control6.data <- Read10X(data.dir = "controls/GSM4848461/")
+Control6 <- CreateSeuratObject(counts = Control6.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Control6[["percent.mt"]] <- PercentageFeatureSet(Control6, pattern = "^MT-")
+VlnPlot(Control6, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Control6 <- subset(Control6, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Control6$group <- "Control"
+Control6$sampleId<-"Control6"
+# Verify the addition
+head(Control6@meta.data)
+#all.genes <- rownames(Control6)
+Control6<- SCTransform(Control6, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Control6 <- head(VariableFeatures(Control6), 10)
+plot1 <- VariableFeaturePlot(Control6)
+plot2 <- LabelPoints(plot = plot1, points = top10.Control6, repel = TRUE)
+plot2
+Control6 <- RunPCA(Control6, features = VariableFeatures(object = Control6))
+ElbowPlot(Control6)
+#resolution trial
+Control6_0.6 <- FindNeighbors(Control6, dims = 1:10)
+Control6_0.6 <- FindClusters(Control6_0.6, resolution = 0.6)
+Control6_0.6 <- RunUMAP(Control6_0.6, dims = 1:10)
+DimPlot(Control6_0.6, reduction = "umap")
+DoHeatmap(Control6_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Control6_0.6, features = c("COCH"))
+
+
+
+
+
+
+
+
+#covid19
+
+
+
+#if there is disparrity between dims
+# Read the barcodes, genes, and matrix files
+barcodes_covid19_1 <- readLines("covid -choroid/GSM4848451_c12_barcodes.tsv.gz")
+genes_covid19_1 <- readLines("covid-choroid/GSM4848451_c12_features.tsv.gz")  
+matrix_covid19_1 <- readMM("covid-choroid/GSM4848451_c12_matrix.mtx.gz")
+Endothelial_markers<-c("SERPINE1","MECOM","HSP90AA1","HSPH1","ARL15","LDB2","FLT1","VWF","HSPD1","ANO2","HSPA5","PELI1","PIK3R3","ATP8B1","SERPINH1")
+
+
+# Check dimensions
+length(barcodes)
+length(genes)
+dim(matrix)
+install.packages("R.utils")
+library(R.utils)
+
+#covid19_1_GSM4848451
+
+Covid19_1.data <- Read10X(data.dir = "covid -choroid/GSM4848451")
+Covid19_1 <- CreateSeuratObject(counts = Covid19_1.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Covid19_1[["percent.mt"]] <- PercentageFeatureSet(Covid19_1, pattern = "^MT-")
+VlnPlot(Covid19_1, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Covid19_1 <- subset(Covid19_1, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Covid19_1$group <- "Covid"
+Covid19_1$sampleId<-"Covid1"
+# Verify the addition
+head(Covid19_1@meta.data)
+#all.genes <- rownames(Covid19_1)
+Covid19_1<- SCTransform(Covid19_1, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Covid19_1 <- head(VariableFeatures(Covid19_1), 10)
+plot1 <- VariableFeaturePlot(Covid19_1)
+plot2 <- LabelPoints(plot = plot1, points = top10.Covid19_1, repel = TRUE)
+plot2
+Covid19_1 <- RunPCA(Covid19_1, features = VariableFeatures(object = Covid19_1))
+ElbowPlot(Covid19_1)
+#resolution trial
+Covid19_1_0.6 <- FindNeighbors(Covid19_1, dims = 1:10)
+Covid19_1_0.6 <- FindClusters(Covid19_1_0.6, resolution = 0.6)
+Covid19_1_0.6 <- RunUMAP(Covid19_1_0.6, dims = 1:10)
+DimPlot(Covid19_1_0.6, reduction = "umap")
+DoHeatmap(Covid19_1_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Covid19_1_0.6, features = c("COCH"))
+
+
+#covid19_2-GSM4848452
+
+Covid19_2.data <- Read10X(data.dir = "covid -choroid/GSM4848452")
+Covid19_2 <- CreateSeuratObject(counts = Covid19_2.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Covid19_2[["percent.mt"]] <- PercentageFeatureSet(Covid19_2, pattern = "^MT-")
+VlnPlot(Covid19_2, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Covid19_2 <- subset(Covid19_2, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Covid19_2$group <- "Covid"
+Covid19_2$sampleId<-"Covid2"
+# Verify the addition
+head(Covid19_2@meta.data)
+#all.genes <- rownames(Covid19_2)
+Covid19_2<- SCTransform(Covid19_2, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Covid19_2 <- head(VariableFeatures(Covid19_2), 10)
+plot1 <- VariableFeaturePlot(Covid19_2)
+plot2 <- LabelPoints(plot = plot1, points = top10.Covid19_2, repel = TRUE)
+plot2
+Covid19_2 <- RunPCA(Covid19_2, features = VariableFeatures(object = Covid19_2))
+ElbowPlot(Covid19_2)
+#resolution trial
+Covid19_2_0.6 <- FindNeighbors(Covid19_2, dims = 1:10)
+Covid19_2_0.6 <- FindClusters(Covid19_2_0.6, resolution = 0.6)
+Covid19_2_0.6 <- RunUMAP(Covid19_2_0.6, dims = 1:10)
+DimPlot(Covid19_2_0.6, reduction = "umap")
+DoHeatmap(Covid19_2_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Covid19_2_0.6, features = c("COCH"))
+
+#covid19_3-GSM4848453
+
+Covid19_3.data <- Read10X(data.dir = "covid -choroid/GSM4848453")
+Covid19_3 <- CreateSeuratObject(counts = Covid19_3.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Covid19_3[["percent.mt"]] <- PercentageFeatureSet(Covid19_3, pattern = "^MT-")
+VlnPlot(Covid19_3, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Covid19_3 <- subset(Covid19_3, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Covid19_3$group <- "Covid"
+Covid19_3$sampleId<-"Covid3"
+# Verify the addition
+head(Covid19_3@meta.data)
+#all.genes <- rownames(Covid19_3)
+Covid19_3<- SCTransform(Covid19_3, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Covid19_3 <- head(VariableFeatures(Covid19_3), 10)
+plot1 <- VariableFeaturePlot(Covid19_3)
+plot2 <- LabelPoints(plot = plot1, points = top10.Covid19_3, repel = TRUE)
+plot2
+Covid19_3 <- RunPCA(Covid19_3, features = VariableFeatures(object = Covid19_3))
+ElbowPlot(Covid19_3)
+#resolution trial
+Covid19_3_0.6 <- FindNeighbors(Covid19_3, dims = 1:10)
+Covid19_3_0.6 <- FindClusters(Covid19_3_0.6, resolution = 0.6)
+Covid19_3_0.6 <- RunUMAP(Covid19_3_0.6, dims = 1:10)
+DimPlot(Covid19_3_0.6, reduction = "umap")
+DoHeatmap(Covid19_3_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Covid19_3_0.6, features = c("COCH"))
+
+#covid19_4-GSM4848454
+
+Covid19_4.data <- Read10X(data.dir = "covid -choroid/GSM4848454")
+Covid19_4 <- CreateSeuratObject(counts = Covid19_4.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Covid19_4[["percent.mt"]] <- PercentageFeatureSet(Covid19_4, pattern = "^MT-")
+VlnPlot(Covid19_4, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Covid19_4 <- subset(Covid19_4, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Covid19_4$group <- "Covid"
+Covid19_4$sampleId<-"Covid4"
+# Verify the addition
+head(Covid19_4@meta.data)
+#all.genes <- rownames(Covid19_4)
+Covid19_4<- SCTransform(Covid19_4, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Covid19_4 <- head(VariableFeatures(Covid19_4), 10)
+plot1 <- VariableFeaturePlot(Covid19_4)
+plot2 <- LabelPoints(plot = plot1, points = top10.Covid19_4, repel = TRUE)
+plot2
+Covid19_4 <- RunPCA(Covid19_4, features = VariableFeatures(object = Covid19_4))
+ElbowPlot(Covid19_4)
+#resolution trial
+Covid19_4_0.6 <- FindNeighbors(Covid19_4, dims = 1:10)
+Covid19_4_0.6 <- FindClusters(Covid19_4_0.6, resolution = 0.6)
+Covid19_4_0.6 <- RunUMAP(Covid19_4_0.6, dims = 1:10)
+DimPlot(Covid19_4_0.6, reduction = "umap")
+DoHeatmap(Covid19_4_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Covid19_4_0.6, features = c("COCH"))
+
+
+#covid19_5-GSM5171535
+
+Covid19_5.data <- Read10X(data.dir = "covid -choroid/GSM5171535")
+Covid19_5 <- CreateSeuratObject(counts = Covid19_5.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Covid19_5[["percent.mt"]] <- PercentageFeatureSet(Covid19_5, pattern = "^MT-")
+VlnPlot(Covid19_5, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Covid19_5 <- subset(Covid19_5, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Covid19_5$group <- "Covid"
+Covid19_5$sampleId<-"Covid5"
+# Verify the addition
+head(Covid19_5@meta.data)
+#all.genes <- rownames(Covid19_5)
+Covid19_5<- SCTransform(Covid19_5, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Covid19_5 <- head(VariableFeatures(Covid19_5), 10)
+plot1 <- VariableFeaturePlot(Covid19_5)
+plot2 <- LabelPoints(plot = plot1, points = top10.Covid19_5, repel = TRUE)
+plot2
+Covid19_5 <- RunPCA(Covid19_5, features = VariableFeatures(object = Covid19_5))
+ElbowPlot(Covid19_5)
+#resolution trial
+Covid19_5_0.6 <- FindNeighbors(Covid19_5, dims = 1:10)
+Covid19_5_0.6 <- FindClusters(Covid19_5_0.6, resolution = 0.6)
+Covid19_5_0.6 <- RunUMAP(Covid19_5_0.6, dims = 1:10)
+DimPlot(Covid19_5_0.6, reduction = "umap")
+DoHeatmap(Covid19_5_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Covid19_5_0.6, features = c("COCH"))
+
+#covid19_6-GSM5171536
+
+Covid19_6.data <- Read10X(data.dir = "covid -choroid/GSM5171536")
+Covid19_6 <- CreateSeuratObject(counts = Covid19_6.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Covid19_6[["percent.mt"]] <- PercentageFeatureSet(Covid19_6, pattern = "^MT-")
+VlnPlot(Covid19_6, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Covid19_6 <- subset(Covid19_6, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Covid19_6$group <- "Covid"
+Covid19_6$sampleId<-"Covid6"
+# Verify the addition
+head(Covid19_6@meta.data)
+#all.genes <- rownames(Covid19_6)
+Covid19_6<- SCTransform(Covid19_6, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Covid19_6 <- head(VariableFeatures(Covid19_6), 10)
+plot1 <- VariableFeaturePlot(Covid19_6)
+plot2 <- LabelPoints(plot = plot1, points = top10.Covid19_6, repel = TRUE)
+plot2
+Covid19_6 <- RunPCA(Covid19_6, features = VariableFeatures(object = Covid19_6))
+ElbowPlot(Covid19_6)
+#resolution trial
+Covid19_6_0.6 <- FindNeighbors(Covid19_6, dims = 1:10)
+Covid19_6_0.6 <- FindClusters(Covid19_6_0.6, resolution = 0.6)
+Covid19_6_0.6 <- RunUMAP(Covid19_6_0.6, dims = 1:10)
+DimPlot(Covid19_6_0.6, reduction = "umap")
+DoHeatmap(Covid19_6_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Covid19_6_0.6, features = c("COCH"))
+
+#covid19_7-GSM5171537
+
+Covid19_7.data <- Read10X(data.dir = "covid -choroid/GSM5171537")
+Covid19_7 <- CreateSeuratObject(counts = Covid19_7.data, project = "human.choroid", min.cells = 3, min.features = 200)
+Covid19_7[["percent.mt"]] <- PercentageFeatureSet(Covid19_7, pattern = "^MT-")
+VlnPlot(Covid19_7, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+Covid19_7 <- subset(Covid19_7, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & nCount_RNA < 5000 & percent.mt < 5)
+Covid19_7$group <- "Covid"
+Covid19_7$sampleId<-"Covid7"
+# Verify the addition
+head(Covid19_7@meta.data)
+#all.genes <- rownames(Covid19_7)
+Covid19_7<- SCTransform(Covid19_7, vars.to.regress = "percent.mt", verbose = FALSE)
+top10.Covid19_7 <- head(VariableFeatures(Covid19_7), 10)
+plot1 <- VariableFeaturePlot(Covid19_7)
+plot2 <- LabelPoints(plot = plot1, points = top10.Covid19_7, repel = TRUE)
+plot2
+Covid19_7 <- RunPCA(Covid19_7, features = VariableFeatures(object = Covid19_7))
+ElbowPlot(Covid19_7)
+#resolution trial
+Covid19_7_0.6 <- FindNeighbors(Covid19_7, dims = 1:10)
+Covid19_7_0.6 <- FindClusters(Covid19_7_0.6, resolution = 0.6)
+Covid19_7_0.6 <- RunUMAP(Covid19_7_0.6, dims = 1:10)
+DimPlot(Covid19_7_0.6, reduction = "umap")
+DoHeatmap(Covid19_7_0.6, features = c("COCH","VWF","EMCN","LUM","DCN","ASMT","ADRB1","PENK","S100B","LYZ2","C1Qa","RT1-Bb")) + NoLegend()
+DotPlot(Covid19_7_0.6, features = c("COCH"))
+
+
+
+
+
+
+
+#harmony integration
+#seaurat objects created but not sctransformed
+library(Seurat)
+library(harmony)
+
+# Step 1:  Merge all objects
+all_samples <- merge(Control1, y = list(Control2, Control3, Control4, Control5, Control6,
+                                        Covid19_1, Covid19_2, Covid19_3, Covid19_4, Covid19_5, Covid19_6, Covid19_7))
+
+# Step 3: Normalize and find variable features
+all_samples <- NormalizeData(all_samples)
+all_samples <- FindVariableFeatures(all_samples, selection.method = "vst", nfeatures = 2000)
+
+# Step 4: Scale and run PCA
+all_samples <- ScaleData(all_samples, verbose = FALSE)
+all_samples <- RunPCA(all_samples, npcs = 30, verbose = FALSE)
+
+# Step 5: Run Harmony using 'group' as batch variable
+all_samples <- RunHarmony(all_samples, group.by.vars = "sampleId")
+
+# Step 6: UMAP and clustering
+all_samples <- RunUMAP(all_samples, reduction = "harmony", dims = 1:20)
+all_samples <- FindNeighbors(all_samples, reduction = "harmony", dims = 1:20)
+all_samples <- FindClusters(all_samples, resolution = 0.2)
+
+# Step 7: Visualization
+DimPlot(all_samples, reduction = "umap", group.by = "group", label = TRUE)
+DimPlot(all_samples, reduction = "umap", group.by = "sampleId", label = TRUE)
+DimPlot(all_samples, reduction = "umap", label = TRUE)
+VlnPlot(all_samples, features = c("COCH"))
+
+table(all_samples$sampleId)
+#Control1 Control2 Control3 Control4 Control5 Control6   Covid1   Covid2   Covid3   Covid4   Covid5   Covid6 
+#608     2295      457     2413     3339     3497     3417     1384     3475      507      172      692 
+#Covid7 
+#1490 
+# Extract COCH expression and group info
+coch_data <- FetchData(all_samples, vars = c("COCH", "group"))
+
+# Perform Wilcoxon test
+wilcox_result <- wilcox.test(COCH ~ group, data = coch_data)
+print(wilcox_result)
+
+
+VlnPlot(all_samples, features = "COCH", group.by = "group", pt.size = 0.1) +
+  geom_boxplot(width = 0.1, outlier.shape = NA, color = "black")
+ggplot(coch_data, aes(x = group, y = COCH, fill = group)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.2, size = 0.5, alpha = 0.6) +
+  theme_minimal() +
+  labs(title = "COCH Expression in Control vs Covid19", y = "Expression Level")
+
+
+
+p_val <- signif(wilcox_result$p.value, 3)
+ggplot(coch_data, aes(x = group, y = COCH, fill = group)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.2, size = 0.5, alpha = 0.6) +
+  annotate("text", x = 1.5, y = max(coch_data$COCH), label = paste("p =", p_val)) +
+  theme_minimal()
+
+
+# UMAP with COCH expression overlay
+FeaturePlot(all_samples, features = "COCH", reduction = "umap", cols = c("lightgrey", "red"))
+
+# Violin plot by cluster
+VlnPlot(all_samples, features = "COCH", group.by = "seurat_clusters", pt.size = 0.1) +
+  ggtitle("COCH Expression Across Clusters")
+
+write.csv(coch_data, file = "Coch_human_ChP.csv", row.names = FALSE)
+
+
+> table(all_samples$group)
+
+#Control   Covid 
+#12609   11137 
+all_samples <- JoinLayers(all_samples)
+Idents(all_samples) <- "group"
+degs_group <- FindMarkers(all_samples, ident.1 = "Covid", ident.2 = "Control", 
+                          group.by = "group", test.use = "wilcox", 
+                          logfc.threshold = 0.25, min.pct = 0.1)
+
+#sample level bias check
+
+coch_sample_data <- FetchData(all_samples, vars = c("COCH", "sampleId", "group"))
+# Aggregate mean COCH expression per sample
+coch_summary <- coch_sample_data %>%
+  group_by(sampleId, group) %>%
+  summarise(mean_COCH = mean(COCH), .groups = "drop")
+
+ggplot(coch_summary, aes(x = sampleId, y = mean_COCH, fill = group)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Mean COCH Expression per Sample", x = "Sample", y = "Mean COCH Expression") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+wilcox.test(mean_COCH ~ group, data = coch_summary)
+
+ggplot(coch_sample_data, aes(x = sampleId, y = COCH, fill = group)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.2, size = 0.5, alpha = 0.5) +
+  theme_minimal() +
+  labs(title = "COCH Expression Distribution per Sample", y = "Expression Level") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+
+#pseudobulk DEGs
+# Extract raw counts
+counts <- GetAssayData(all_samples, assay = "RNA", layer = "counts")
+
+
+# Get sample IDs
+sample_ids <- all_samples$sampleId
+
+# Aggregate counts per sample
+pseudobulk_counts <- split(seq_len(ncol(counts)), sample_ids) %>%
+  lapply(function(cells) rowSums(counts[, cells, drop = FALSE])) %>%
+  do.call(cbind, .)
